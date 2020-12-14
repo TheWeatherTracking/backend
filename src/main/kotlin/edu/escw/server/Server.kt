@@ -2,10 +2,12 @@ package edu.escw.server
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
+import org.springframework.boot.web.servlet.ServletComponentScan
 
+@ServletComponentScan
 @SpringBootApplication
-class DemoApplication
+class Server
 
 fun main(args: Array<String>) {
-	runApplication<DemoApplication>(*args)
+	runApplication<Server>(*args)
 }

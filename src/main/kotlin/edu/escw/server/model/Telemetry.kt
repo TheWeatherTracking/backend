@@ -31,4 +31,10 @@ class Telemetry {
     @Column(name = "tmstamp")
     var tmstamp: Timestamp? = null;
 
+
+    override fun toString(): String {
+        return "Telemetry(id=$id, device=$device, temperature=$temperature, pressure=$pressure, moisture=$moisture, luminosity=$luminosity, tmstamp=$tmstamp)"
+    }
+
+
 }

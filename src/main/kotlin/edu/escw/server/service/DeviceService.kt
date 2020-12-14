@@ -18,4 +18,6 @@ class DeviceService (private val deviceRepository: DeviceRepository) {
 
     fun remove(id: Long) = deviceRepository.deleteById(id)
 
+    fun count() = deviceRepository.count()
+
 }
