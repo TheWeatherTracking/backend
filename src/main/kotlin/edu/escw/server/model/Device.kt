@@ -5,7 +5,8 @@ import javax.persistence.*
 @Entity
 @Table(name = "devices")
 class Device {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "device_id")
     var id: Long = 0;
 
@@ -17,5 +18,9 @@ class Device {
 
     @Column(name = "props")
     var properties: String = "";
+
+    override fun toString(): String {
+        return "Device(id=$id, signature='$signature', ip='$ip', properties='$properties')"
+    }
 
 }

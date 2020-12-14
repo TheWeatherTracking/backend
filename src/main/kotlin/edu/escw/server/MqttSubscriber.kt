@@ -39,7 +39,7 @@ class MqttSubscriber(private val deviceService: DeviceService, private val telem
                             val mqttConnectOptions: MqttConnectOptions = MqttConnectOptions()
                             mqttConnectOptions.isAutomaticReconnect = true;
                             mqttConnectOptions.isCleanSession = true;
-                            mqttConnectOptions.connectionTimeout = 10;
+                            mqttConnectOptions.connectionTimeout = 100_000;
 
                             client.setCallback(DeviceMqttCallback(telemetryService, device))
                             client.connect(mqttConnectOptions);
