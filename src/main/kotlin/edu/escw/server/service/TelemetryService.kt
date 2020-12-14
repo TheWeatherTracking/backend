@@ -19,4 +19,6 @@ class TelemetryService(private val telemetryRepository: TelemetryRepository) {
 
     fun remove(id: Long) = telemetryRepository.deleteById(id)
 
+    fun getCurrentByDevice(deviceSignature: String): Optional<Telemetry> = telemetryRepository.getCurrentByDevice(deviceSignature)
+
 }

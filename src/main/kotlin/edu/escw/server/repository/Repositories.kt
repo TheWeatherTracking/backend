@@ -8,13 +8,12 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.rest.core.annotation.RepositoryRestResource
-import java.sql.Timestamp
 import java.util.*
-import javax.persistence.NamedNativeQuery
 
 @RepositoryRestResource
 interface DeviceRepository : JpaRepository<Device, Long> {
-
+    @Query("SELECT d FROM Device d WHERE d.signature = ?1")
+    fun getBySignature(device_signature: String): Optional<Device>;
 }
 
 @RepositoryRestResource
@@ -25,10 +24,14 @@ interface UserRepository : JpaRepository<User, Long> {
 
 @RepositoryRestResource
 interface TelemetryRepository : JpaRepository<Telemetry, Long> {
+    @Query("SELECT t FROM Telemetry t WHERE t.tmstamp IN (SELECT max(t1.tmstamp) FROM Telemetry t1 " +
+            "WHERE t1.device.signature = ?1) AND t.device.signature = ?1")
+    fun getCurrentByDevice(device_signature: String): Optional<Telemetry>
+
     @Query("SELECT t FROM Telemetry t WHERE t.tmstamp > TO_TIMESTAMP(?1, 'YYYY-MM-DD HH24:MI:SS')")
     fun getAfter(timestamp: String, p: Pageable): Page<Telemetry>;
 
-    @Query(value = "SELECT t FROM Telemetry t WHERE t.tmstamp > TO_TIMESTAMP(?1, 'YYYY-MM-DD HH24:MI:SS') AND t.device.id = ?2")
-    fun getAfterByDevice(timestamp: String, id: Long, p: Pageable): Page<Telemetry>;
+    @Query(value = "SELECT t FROM Telemetry t WHERE t.tmstamp > TO_TIMESTAMP(?1, 'YYYY-MM-DD HH24:MI:SS') AND t.device.signature = ?2")
+    fun getAfterByDevice(timestamp: String, device_signature: String, p: Pageable): Page<Telemetry>;
 }
 

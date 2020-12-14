@@ -10,4 +10,6 @@ class UserService(private val userRepository: UserRepository) {
     fun getAll(): Iterable<User> = userRepository.findAll();
 
     fun getByLogin(login: String): Optional<User> = userRepository.getByLogin(login);
+
+    fun add(user: User): User = userRepository.save(user)
 }

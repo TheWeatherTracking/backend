@@ -15,12 +15,11 @@ import org.springframework.stereotype.Component
 import java.sql.Timestamp
 import java.time.LocalDateTime
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 
 @Component
 @Order(0)
-class MqttStartup(private val deviceService: DeviceService, private val telemetryService: TelemetryService) : ApplicationListener<ApplicationReadyEvent> {
+class MqttSubscriber(private val deviceService: DeviceService, private val telemetryService: TelemetryService) : ApplicationListener<ApplicationReadyEvent> {
 
     override fun onApplicationEvent(p0: ApplicationReadyEvent) {
 
@@ -34,15 +33,15 @@ class MqttStartup(private val deviceService: DeviceService, private val telemetr
 
                         // create coroutine to handle given devise subscription
                         GlobalScope.launch {
-                            val pubId: String = UUID.randomUUID().toString()
-                            val client: IMqttClient = MqttClient("tcp://" + device.ip + ":1883", pubId)
+                            val clientId: String = UUID.randomUUID().toString()
+                            val client: IMqttClient = MqttClient("tcp://" + device.ip + ":1883", clientId)
 
                             val mqttConnectOptions: MqttConnectOptions = MqttConnectOptions()
                             mqttConnectOptions.isAutomaticReconnect = true;
                             mqttConnectOptions.isCleanSession = true;
                             mqttConnectOptions.connectionTimeout = 10;
 
-                            client.setCallback(DeviceTemperatureMqttCallback(telemetryService, device))
+                            client.setCallback(DeviceMqttCallback(telemetryService, device))
                             client.connect(mqttConnectOptions);
 
                             client.subscribe("/devices/" + device.signature)
@@ -57,7 +56,7 @@ class MqttStartup(private val deviceService: DeviceService, private val telemetr
     }
 }
 
-class DeviceTemperatureMqttCallback(private val telemetryService: TelemetryService, private val device: Device) : MqttCallback {
+class DeviceMqttCallback(private val telemetryService: TelemetryService, private val device: Device) : MqttCallback {
 
     override fun messageArrived(p0: String?, p1: MqttMessage?) {
         try {

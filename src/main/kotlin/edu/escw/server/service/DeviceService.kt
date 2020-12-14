@@ -20,4 +20,6 @@ class DeviceService (private val deviceRepository: DeviceRepository) {
 
     fun count() = deviceRepository.count()
 
+    fun getBySignature(deviceSignature: String): Optional<Device> = deviceRepository.getBySignature(deviceSignature)
+
 }
