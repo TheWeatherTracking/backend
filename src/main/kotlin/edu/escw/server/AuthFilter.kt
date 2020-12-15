@@ -10,12 +10,17 @@ import javax.servlet.http.HttpFilter
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-@WebFilter(urlPatterns = arrayOf("/*"))
+@WebFilter(urlPatterns = ["/*"])
 class AuthFilter(private val userService: UserService) : HttpFilter() {;
 
-    override fun doFilter(request: HttpServletRequest?, response: HttpServletResponse?, chain: FilterChain?) {
+    override fun doFilter(request: HttpServletRequest, response: HttpServletResponse, chain: FilterChain) {
         try {
-            if (request?.getHeader("Authorization") != null) {
+            if (request.requestURI == "/api/users" && request.method.toUpperCase() == "POST") {
+                super.doFilter(request, response, chain)
+                return;
+            }
+
+            if (request.getHeader("Authorization") != null) {
                 val authHeader = request.getHeader("Authorization")
                 val userCridentials: String = String(Base64.getDecoder().decode(authHeader.replace("Basic ", "")))
 
@@ -26,15 +31,16 @@ class AuthFilter(private val userService: UserService) : HttpFilter() {;
 
                 if (optUser.isPresent) {
                     val hashedPass: String = Hashing.sha256().hashString(password, StandardCharsets.UTF_8).toString()
-                    if (hashedPass.toUpperCase().equals(optUser.get().password.toUpperCase())) {
+                    if (hashedPass.toUpperCase() == optUser.get().password.toUpperCase()) {
                         super.doFilter(request, response, chain)
                         return;
                     }
                 }
             }
-            response?.sendError(403);
+
+            response.sendError(403);
         } catch (e: Exception) {
-            response?.sendError(403);
+            response.sendError(403);
         }
     }
 }

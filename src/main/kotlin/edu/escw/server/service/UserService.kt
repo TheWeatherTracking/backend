@@ -7,7 +7,7 @@ import java.util.*
 
 @Service
 class UserService(private val userRepository: UserRepository) {
-    fun getAll(): Iterable<User> = userRepository.findAll();
+    fun getAll(): List<User> = userRepository.findAll();
 
     fun getByLogin(login: String): Optional<User> = userRepository.getByLogin(login);
 

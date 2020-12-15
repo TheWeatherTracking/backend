@@ -3,11 +3,9 @@ package edu.escw.server.controller
 import com.google.common.hash.Hashing
 import edu.escw.server.model.User
 import edu.escw.server.service.UserService
+import org.springframework.data.domain.PageImpl
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import java.nio.charset.StandardCharsets
 
 @RestController
@@ -18,8 +16,7 @@ class UserController(private val userService: UserService) {
     fun createUser(
             @RequestParam(name = "login", defaultValue = "") login: String,
             @RequestParam(name = "password", defaultValue = "") password: String
-            ): ResponseEntity<User> {
-        println("$login $password")
+    ): ResponseEntity<User> {
 
         if (login.isEmpty() || password.isEmpty()) {
             return ResponseEntity.badRequest().build()
@@ -36,6 +33,11 @@ class UserController(private val userService: UserService) {
         user = userService.add(user)
 
         return ResponseEntity.status(201).body(user)
+    }
+
+    @GetMapping
+    fun getAll(): PageImpl<User> {
+        return PageImpl(userService.getAll())
     }
 
 }
