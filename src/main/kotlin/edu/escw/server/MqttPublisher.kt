@@ -17,7 +17,7 @@ class MqttPublisher {
         mqttConnectOptions.isCleanSession = true;
         mqttConnectOptions.connectionTimeout = 10;
 
-        val topic: MqttTopic = client.getTopic("/devices/" + device.signature)
+        val topic: MqttTopic = client.getTopic("/devices/cmd/" + device.signature)
         val message: MqttMessage = MqttMessage("7".toByteArray())
         message.qos = 1
         message.isRetained = true

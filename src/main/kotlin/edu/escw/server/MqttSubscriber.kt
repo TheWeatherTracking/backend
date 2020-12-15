@@ -45,7 +45,7 @@ class MqttSubscriber(private val deviceService: DeviceService, private val telem
                             client.setCallback(DeviceMqttCallback(telemetryService, device))
                             client.connect(mqttConnectOptions);
 
-                            client.subscribe("/devices/" + device.signature)
+                            client.subscribe("/devices/evt/" + device.signature)
                         }
                     }
                 }
